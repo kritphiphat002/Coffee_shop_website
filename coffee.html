@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>กาแฟ</title>
+
+<style>
+body{margin:0;font-family:Arial;background:#f3f3f3;}
+header{background:#4e342e;color:white;padding:20px;text-align:center;}
+.container{padding:30px;}
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;}
+.card{background:white;padding:20px;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,0.1);text-align:center;}
+.card img{width:100%;height:200px;object-fit:cover;border-radius:10px;}
+button{cursor:pointer;border:none;border-radius:5px;padding:8px 15px;margin-top:10px;}
+.add{background:#6d4c41;color:white;}
+.remove{background:red;color:white;margin-left:10px;}
+.checkout{background:green;color:white;margin-top:10px;}
+.clear{background:#b71c1c;color:white;margin-top:10px;}
+.cart,.history{margin-top:30px;background:white;padding:20px;border-radius:10px;}
+.modal{
+  display:none;
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  background:rgba(0,0,0,0.6);
+  justify-content:center;
+  align-items:center;
+}
+.modal-content{
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  width:300px;
+  text-align:center;
+}
+a{color:white;text-decoration:none;}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>☕ เมนูกาแฟ</h1>
+<a href="index.html">← กลับหน้าแรก</a>
+</header>
+
+<div class="container">
+
+<div class="products">
+
+<div class="card">
+<img src="https://source.unsplash.com/400x300/?espresso">
+<h3>Espresso</h3>
+<p>50 บาท</p>
+<button class="add" onclick="addToCart('Espresso',50)">เพิ่มลงตะกร้า</button>
+</div>
+
+<div class="card">
+<img src="https://source.unsplash.com/400x300/?latte">
+<h3>Latte</h3>
+<p>60 บาท</p>
+<button class="add" onclick="addToCart('Latte',60)">เพิ่มลงตะกร้า</button>
+</div>
+
+<div class="card">
+<img src="https://source.unsplash.com/400x300/?cappuccino">
+<h3>Cappuccino</h3>
+<p>65 บาท</p>
+<button class="add" onclick="addToCart('Cappuccino',65)">เพิ่มลงตะกร้า</button>
+</div>
+
+</div>
+
+<div class="cart">
+<h2>🛒 ตะกร้าสินค้า</h2>
+<div id="cartItems">ยังไม่มีสินค้า</div>
+<p><strong>ยอดรวม: <span id="total">0</span> บาท</strong></p>
+
+<button class="checkout" onclick="openModal()">สั่งซื้อเลย</button>
+<br>
+<button class="clear" onclick="clearCart()">ยกเลิกสินค้าทั้งหมด</button>
+</div>
+
+<div class="history">
+<h2>📜 ประวัติการสั่งซื้อ (กาแฟ)</h2>
+<div id="orderHistory">ยังไม่มีประวัติ</div>
+</div>
+
+</div>
+
+<div class="modal" id="orderModal">
+  <div class="modal-content">
+    <h3>กรอกข้อมูลสั่งซื้อ</h3>
+    <input type="text" id="customerName" placeholder="ชื่อ"><br><br>
+    <input type="text" id="customerPhone" placeholder="เบอร์โทร"><br><br>
+    <button class="checkout" onclick="submitOrder()">ยืนยันสั่งซื้อ</button>
+    <button onclick="closeModal()">ยกเลิก</button>
+  </div>
+</div>
+
+<script>
+let cart = [];
+let total = 0;
+let history = JSON.parse(localStorage.getItem("coffeeHistory")) || [];
+
+function addToCart(name,price){
+  cart.push({name,price});
+  total += price;
+  renderCart();
+}
+
+function removeItem(index){
+  total -= cart[index].price;
+  cart.splice(index,1);
+  renderCart();
+}
+
+function renderCart(){
+  let cartDiv = document.getElementById("cartItems");
+  cartDiv.innerHTML = "";
+  if(cart.length === 0){
+    cartDiv.innerHTML = "ยังไม่มีสินค้า";
+  } else {
+    cart.forEach((item,index)=>{
+      cartDiv.innerHTML += 
+        item.name + " - " + item.price + " บาท " +
+        "<button class='remove' onclick='removeItem("+index+")'>ลบ</button><br>";
+    });
+  }
+  document.getElementById("total").innerText = total;
+}
+
+function clearCart(){
+  cart = [];
+  total = 0;
+  renderCart();
+}
+
+function openModal(){
+  if(cart.length === 0){
+    alert("กรุณาเลือกสินค้า");
+    return;
+  }
+  document.getElementById("orderModal").style.display="flex";
+}
+
+function closeModal(){
+  document.getElementById("orderModal").style.display="none";
+}
+
+function submitOrder(){
+  let name = document.getElementById("customerName").value;
+  let phone = document.getElementById("customerPhone").value;
+
+  if(name === "" || phone === ""){
+    alert("กรอกข้อมูลให้ครบ");
+    return;
+  }
+
+  let order = {
+    name:name,
+    phone:phone,
+    items:cart,
+    total:total,
+    date:new Date().toLocaleString()
+  };
+
+  history.push(order);
+  localStorage.setItem("coffeeHistory", JSON.stringify(history));
+
+  alert("สั่งซื้อสำเร็จ 🎉");
+
+  cart = [];
+  total = 0;
+  renderCart();
+  renderHistory();
+  closeModal();
+}
+
+function renderHistory(){
+  let div = document.getElementById("orderHistory");
+  div.innerHTML = "";
+
+  if(history.length === 0){
+    div.innerHTML = "ยังไม่มีประวัติ";
+    return;
+  }
+
+  history.forEach((order,index)=>{
+    div.innerHTML += 
+      "<hr><strong>ออเดอร์ที่ "+(index+1)+"</strong><br>" +
+      "ชื่อ: "+order.name+"<br>" +
+      "เวลา: "+order.date+"<br>" +
+      "ยอดรวม: "+order.total+" บาท<br>";
+  });
+}
+
+renderHistory();
+</script>
+
+</body>
+</html>
