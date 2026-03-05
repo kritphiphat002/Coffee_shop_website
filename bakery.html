@@ -9,33 +9,74 @@
 body{margin:0;font-family:Arial;background:#f5f5f5;}
 header{background:#3e2723;color:white;padding:20px;text-align:center;}
 .container{padding:30px;}
-.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;}
-.card{background:white;padding:20px;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,0.1);text-align:center;}
-.card img{width:100%;border-radius:10px;height:200px;object-fit:cover;}
-button{cursor:pointer;border:none;border-radius:5px;padding:8px 15px;margin-top:10px;}
+
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+text-align:center;
+}
+
+.card img{
+width:100%;
+height:200px;
+object-fit:cover;
+border-radius:10px;
+}
+
+button{
+cursor:pointer;
+border:none;
+border-radius:5px;
+padding:8px 15px;
+margin-top:10px;
+}
+
 .add{background:#6d4c41;color:white;}
-.add:hover{background:#4e342e;}
 .remove{background:red;color:white;margin-left:10px;}
 .checkout{background:green;color:white;margin-top:10px;}
 .clear{background:#b71c1c;color:white;margin-top:10px;}
-.cart,.history{margin-top:30px;background:white;padding:20px;border-radius:10px;}
-input{padding:8px;margin:5px;width:90%;}
+
+.cart,.history,.receipt{
+margin-top:30px;
+background:white;
+padding:20px;
+border-radius:10px;
+}
+
+input{
+padding:8px;
+margin:5px;
+width:90%;
+}
+
 .modal{
-  display:none;
-  position:fixed;
-  top:0;left:0;
-  width:100%;height:100%;
-  background:rgba(0,0,0,0.6);
-  justify-content:center;
-  align-items:center;
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.6);
+justify-content:center;
+align-items:center;
 }
+
 .modal-content{
-  background:white;
-  padding:20px;
-  border-radius:10px;
-  width:300px;
-  text-align:center;
+background:white;
+padding:20px;
+border-radius:10px;
+width:300px;
+text-align:center;
 }
+
 a{color:white;text-decoration:none;}
 </style>
 </head>
@@ -67,15 +108,23 @@ a{color:white;text-decoration:none;}
 
 </div>
 
+
 <div class="cart">
 <h2>🛒 ตะกร้าสินค้า</h2>
 <div id="cartItems">ยังไม่มีสินค้า</div>
 <p><strong>ยอดรวม: <span id="total">0</span> บาท</strong></p>
 
-<button class="checkout" onclick="openModal()">สั่งซื้อเลย</button>
+<button class="checkout" onclick="openModal()">สั่งซื้อ</button>
 <br>
 <button class="clear" onclick="clearCart()">ยกเลิกสินค้าทั้งหมด</button>
 </div>
+
+
+<div class="receipt">
+<h2>🧾 สลิปการสั่งซื้อ</h2>
+<div id="receipt">ยังไม่มีรายการ</div>
+</div>
+
 
 <div class="history">
 <h2>📜 ประวัติการสั่งซื้อ</h2>
@@ -84,121 +133,196 @@ a{color:white;text-decoration:none;}
 
 </div>
 
+
 <div class="modal" id="orderModal">
-  <div class="modal-content">
-    <h3>กรอกข้อมูลสั่งซื้อ</h3>
-    <input type="text" id="customerName" placeholder="ชื่อ">
-    <input type="text" id="customerPhone" placeholder="เบอร์โทร">
-    <br>
-    <button class="checkout" onclick="submitOrder()">ยืนยันสั่งซื้อ</button>
-    <button onclick="closeModal()">ยกเลิก</button>
-  </div>
+<div class="modal-content">
+
+<h3>กรอกข้อมูลสั่งซื้อ</h3>
+
+<input type="text" id="customerName" placeholder="ชื่อ">
+
+<input type="text" id="customerPhone" placeholder="เบอร์โทร">
+
+<input type="number" id="moneyGiven" placeholder="เงินที่ให้มา">
+
+<br>
+
+<button class="checkout" onclick="submitOrder()">ยืนยัน</button>
+
+<button onclick="closeModal()">ยกเลิก</button>
+
+</div>
 </div>
 
+
 <script>
+
 let cart = [];
 let total = 0;
 let history = JSON.parse(localStorage.getItem("orderHistory")) || [];
 
 function addToCart(name,price){
-  cart.push({name,price});
-  total += price;
-  renderCart();
+cart.push({name,price});
+total += price;
+renderCart();
 }
 
 function removeItem(index){
-  total -= cart[index].price;
-  cart.splice(index,1);
-  renderCart();
+total -= cart[index].price;
+cart.splice(index,1);
+renderCart();
 }
 
 function renderCart(){
-  let cartDiv = document.getElementById("cartItems");
-  cartDiv.innerHTML = "";
-  if(cart.length === 0){
-    cartDiv.innerHTML = "ยังไม่มีสินค้า";
-  } else {
-    cart.forEach((item,index)=>{
-      cartDiv.innerHTML += 
-        item.name + " - " + item.price + " บาท " +
-        "<button class='remove' onclick='removeItem("+index+")'>ลบ</button><br>";
-    });
-  }
-  document.getElementById("total").innerText = total;
+
+let cartDiv = document.getElementById("cartItems");
+cartDiv.innerHTML = "";
+
+if(cart.length === 0){
+cartDiv.innerHTML = "ยังไม่มีสินค้า";
+}
+
+else{
+
+cart.forEach((item,index)=>{
+
+cartDiv.innerHTML += 
+item.name + " - " + item.price + " บาท " +
+"<button class='remove' onclick='removeItem("+index+")'>ยกเลิกสินค้า</button><br>";
+
+});
+
+}
+
+document.getElementById("total").innerText = total;
+
 }
 
 function clearCart(){
-  if(cart.length === 0){
-    alert("ไม่มีสินค้าในตะกร้า");
-    return;
-  }
-  if(confirm("ต้องการยกเลิกทั้งหมด?")){
-    cart = [];
-    total = 0;
-    renderCart();
-  }
+
+if(cart.length === 0){
+alert("ไม่มีสินค้าในตะกร้า");
+return;
+}
+
+if(confirm("ต้องการยกเลิกทั้งหมด?")){
+
+cart = [];
+total = 0;
+
+renderCart();
+
+}
+
 }
 
 function openModal(){
-  if(cart.length === 0){
-    alert("กรุณาเลือกสินค้า");
-    return;
-  }
-  document.getElementById("orderModal").style.display="flex";
+
+if(cart.length === 0){
+alert("กรุณาเลือกสินค้า");
+return;
+}
+
+document.getElementById("orderModal").style.display="flex";
+
 }
 
 function closeModal(){
-  document.getElementById("orderModal").style.display="none";
+
+document.getElementById("orderModal").style.display="none";
+
 }
 
 function submitOrder(){
-  let name = document.getElementById("customerName").value;
-  let phone = document.getElementById("customerPhone").value;
 
-  if(name === "" || phone === ""){
-    alert("กรอกข้อมูลให้ครบ");
-    return;
-  }
+let name = document.getElementById("customerName").value;
+let phone = document.getElementById("customerPhone").value;
+let money = Number(document.getElementById("moneyGiven").value);
 
-  let order = {
-    name:name,
-    phone:phone,
-    items:cart,
-    total:total,
-    date:new Date().toLocaleString()
-  };
+if(name === "" || phone === "" || money === 0){
 
-  history.push(order);
-  localStorage.setItem("orderHistory", JSON.stringify(history));
+alert("กรอกข้อมูลให้ครบ");
+return;
 
-  alert("สั่งซื้อสำเร็จ 🎉");
+}
 
-  cart = [];
-  total = 0;
-  renderCart();
-  renderHistory();
-  closeModal();
+if(money < total){
+
+alert("เงินไม่พอ");
+return;
+
+}
+
+let change = money - total;
+
+
+let receiptText = "<b>ชื่อลูกค้า:</b> "+name+"<br>";
+receiptText += "<b>เบอร์:</b> "+phone+"<br><br>";
+
+receiptText += "<b>รายการสินค้า</b><br>";
+
+cart.forEach(item=>{
+receiptText += item.name + " - " + item.price + " บาท<br>";
+});
+
+receiptText += "<br>";
+receiptText += "รวม: "+total+" บาท<br>";
+receiptText += "รับเงิน: "+money+" บาท<br>";
+receiptText += "เงินทอน: "+change+" บาท<br>";
+
+document.getElementById("receipt").innerHTML = receiptText;
+
+
+let order = {
+name:name,
+phone:phone,
+total:total,
+date:new Date().toLocaleString()
+};
+
+history.push(order);
+
+localStorage.setItem("orderHistory",JSON.stringify(history));
+
+cart=[];
+total=0;
+
+renderCart();
+renderHistory();
+
+closeModal();
+
+alert("สั่งซื้อสำเร็จ");
+
 }
 
 function renderHistory(){
-  let div = document.getElementById("orderHistory");
-  div.innerHTML = "";
 
-  if(history.length === 0){
-    div.innerHTML = "ยังไม่มีประวัติ";
-    return;
-  }
+let div = document.getElementById("orderHistory");
+div.innerHTML="";
 
-  history.forEach((order,index)=>{
-    div.innerHTML += 
-      "<hr><strong>ออเดอร์ที่ "+(index+1)+"</strong><br>" +
-      "ชื่อ: "+order.name+"<br>" +
-      "เวลา: "+order.date+"<br>" +
-      "ยอดรวม: "+order.total+" บาท<br>";
-  });
+if(history.length===0){
+
+div.innerHTML="ยังไม่มีประวัติ";
+return;
+
+}
+
+history.forEach((order,index)=>{
+
+div.innerHTML+=
+"<hr>"+
+"<b>ออเดอร์ "+(index+1)+"</b><br>"+
+"ชื่อ: "+order.name+"<br>"+
+"เวลา: "+order.date+"<br>"+
+"ยอดรวม: "+order.total+" บาท<br>";
+
+});
+
 }
 
 renderHistory();
+
 </script>
 
 </body>
