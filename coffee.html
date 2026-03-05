@@ -2,26 +2,13 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>Jaguar Coffee</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>เมนูกาแฟ</title>
 
 <style>
-
-body{
-margin:0;
-font-family:Arial;
-background:#f3f3f3;
-}
-
-header{
-background:#4e342e;
-color:white;
-padding:20px;
-text-align:center;
-}
-
-.container{
-padding:30px;
-}
+body{margin:0;font-family:Arial;background:#f5f5f5;}
+header{background:#4e342e;color:white;padding:20px;text-align:center;}
+.container{padding:30px;}
 
 .products{
 display:grid;
@@ -45,34 +32,19 @@ border-radius:10px;
 }
 
 button{
-padding:8px 14px;
-margin:5px;
-border:none;
-border-radius:6px;
 cursor:pointer;
+border:none;
+border-radius:5px;
+padding:8px 15px;
+margin-top:10px;
 }
 
-.add{
-background:#6d4c41;
-color:white;
-}
+.add{background:#6d4c41;color:white;}
+.remove{background:red;color:white;margin-left:10px;}
+.checkout{background:green;color:white;margin-top:10px;}
+.clear{background:#b71c1c;color:white;margin-top:10px;}
 
-.checkout{
-background:green;
-color:white;
-}
-
-.remove{
-background:red;
-color:white;
-}
-
-.cancel{
-background:orange;
-color:white;
-}
-
-.cart,.form,.receipt{
+.cart,.history,.receipt{
 margin-top:30px;
 background:white;
 padding:20px;
@@ -82,38 +54,37 @@ border-radius:10px;
 input{
 padding:8px;
 margin:5px;
-width:200px;
+width:90%;
 }
 
-.logo{
-font-size:22px;
-font-weight:bold;
+.modal{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.6);
+justify-content:center;
+align-items:center;
 }
 
-a{
-color:white;
-text-decoration:none;
+.modal-content{
+background:white;
+padding:20px;
+border-radius:10px;
+width:300px;
+text-align:center;
 }
 
-.receipt-box{
-border:1px dashed #999;
-padding:15px;
-margin-top:10px;
-background:#fafafa;
-}
-
-.print{
-background:#2196f3;
-color:white;
-}
-
+a{color:white;text-decoration:none;}
 </style>
 </head>
 
 <body>
 
 <header>
-<div class="logo">☕ Jaguar Coffee</div>
+<h1>☕ เมนูกาแฟ</h1>
 <a href="index.html">← กลับหน้าแรก</a>
 </header>
 
@@ -122,192 +93,264 @@ color:white;
 <div class="products">
 
 <div class="card">
+<img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93">
+<h3>Latte</h3>
+<p>70 บาท</p>
+<button class="add" onclick="addToCart('Latte',70)">เพิ่มลงตะกร้า</button>
+</div>
+
+<div class="card">
 <img src="https://images.unsplash.com/photo-1511920170033-f8396924c348">
 <h3>Espresso</h3>
-<p>50 บาท</p>
-<button class="add" onclick="addToCart('Espresso',50)">เพิ่ม</button>
-</div>
-
-<div class="card">
-<img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735">
-<h3>Latte</h3>
 <p>60 บาท</p>
-<button class="add" onclick="addToCart('Latte',60)">เพิ่ม</button>
+<button class="add" onclick="addToCart('Espresso',60)">เพิ่มลงตะกร้า</button>
 </div>
 
 <div class="card">
-<img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93">
+<img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085">
 <h3>Cappuccino</h3>
-<p>65 บาท</p>
-<button class="add" onclick="addToCart('Cappuccino',65)">เพิ่ม</button>
+<p>75 บาท</p>
+<button class="add" onclick="addToCart('Cappuccino',75)">เพิ่มลงตะกร้า</button>
 </div>
 
 </div>
+
 
 <div class="cart">
-
 <h2>🛒 ตะกร้าสินค้า</h2>
+<div id="cartItems">ยังไม่มีสินค้า</div>
 
-<div id="cartItems"></div>
+<p><strong>ยอดรวม: <span id="total">0</span> บาท</strong></p>
 
-<p>ยอดรวม: <span id="total">0</span> บาท</p>
-
-<button class="cancel" onclick="cancelCart()">ยกเลิกสินค้า</button>
-
+<button class="checkout" onclick="openModal()">สั่งซื้อ</button>
+<br>
+<button class="clear" onclick="clearCart()">ยกเลิกสินค้าทั้งหมด</button>
 </div>
 
-<div class="form">
-
-<h2>📝 ข้อมูลผู้สั่งซื้อ</h2>
-
-<input id="name" placeholder="ชื่อผู้ซื้อ"><br>
-<input id="phone" placeholder="เบอร์โทร"><br>
-<input id="money" placeholder="เงินที่จ่าย"><br>
-
-<button class="checkout" onclick="checkout()">สั่งซื้อ</button>
-
-</div>
 
 <div class="receipt">
+<h2>🧾 สลิปการสั่งซื้อ</h2>
+<div id="receipt">ยังไม่มีรายการ</div>
+</div>
 
-<h2>🧾 ใบเสร็จ</h2>
 
-<div id="receipt" class="receipt-box"></div>
+<div class="history">
+<h2>📜 ประวัติการสั่งซื้อ</h2>
+<div id="orderHistory">ยังไม่มีประวัติ</div>
+</div>
 
-<button class="print" onclick="printReceipt()">พิมพ์ใบเสร็จ</button>
+</div>
+
+
+<div class="modal" id="orderModal">
+
+<div class="modal-content">
+
+<h3>กรอกข้อมูลลูกค้า</h3>
+
+<input type="text" id="customerName" placeholder="ชื่อ">
+
+<input type="text" id="customerPhone" placeholder="เบอร์โทร">
+
+<input type="number" id="moneyGiven" placeholder="เงินที่ให้มา">
+
+<br>
+
+<button class="checkout" onclick="submitOrder()">ยืนยัน</button>
+
+<button onclick="closeModal()">ยกเลิก</button>
 
 </div>
 
 </div>
+
 
 <script>
 
-let cart=[]
-let total=0
-let orderNumber=1
+let cart = [];
+let total = 0;
+
+let history = JSON.parse(localStorage.getItem("coffeeHistory")) || [];
 
 function addToCart(name,price){
 
-let item=cart.find(i=>i.name===name)
+cart.push({name,price});
 
-if(item){
-item.qty++
-}else{
-cart.push({name:name,price:price,qty:1})
-}
+total += price;
 
-total+=price
-
-renderCart()
-
-}
-
-function renderCart(){
-
-let div=document.getElementById("cartItems")
-
-div.innerHTML=""
-
-cart.forEach((item,index)=>{
-
-div.innerHTML+=`
-${item.name} x${item.qty} = ${item.price*item.qty} บาท
-<button class="remove" onclick="removeItem(${index})">ลบ</button>
-<br>
-`
-
-})
-
-document.getElementById("total").innerText=total
+renderCart();
 
 }
 
 function removeItem(index){
 
-total-=cart[index].price*cart[index].qty
+total -= cart[index].price;
 
-cart.splice(index,1)
+cart.splice(index,1);
 
-renderCart()
-
-}
-
-function cancelCart(){
-
-cart=[]
-total=0
-
-renderCart()
+renderCart();
 
 }
 
-function checkout(){
+function renderCart(){
 
-if(cart.length==0){
-alert("ไม่มีสินค้า")
-return
+let cartDiv = document.getElementById("cartItems");
+
+cartDiv.innerHTML="";
+
+if(cart.length===0){
+
+cartDiv.innerHTML="ยังไม่มีสินค้า";
+
 }
 
-let name=document.getElementById("name").value
-let phone=document.getElementById("phone").value
-let money=parseInt(document.getElementById("money").value)
+else{
 
-if(!name || !phone || !money){
-alert("กรอกข้อมูลให้ครบ")
-return
+cart.forEach((item,index)=>{
+
+cartDiv.innerHTML+=
+item.name+" - "+item.price+" บาท "+
+"<button class='remove' onclick='removeItem("+index+")'>ยกเลิกสินค้า</button><br>";
+
+});
+
 }
 
-if(money<total){
-alert("เงินไม่พอ")
-return
+document.getElementById("total").innerText=total;
+
 }
 
-let change=money-total
+function clearCart(){
 
-let now=new Date().toLocaleString()
+cart=[];
+total=0;
 
-let receiptHTML=""
+renderCart();
 
-receiptHTML+="<b>☕ Jaguar Coffee</b><br>"
-receiptHTML+="Order #: "+orderNumber+"<br>"
-receiptHTML+="วันที่: "+now+"<br><br>"
+}
 
-receiptHTML+="ลูกค้า: "+name+"<br>"
-receiptHTML+="เบอร์: "+phone+"<br><br>"
+function openModal(){
 
-receiptHTML+="รายการสินค้า<br>"
+if(cart.length===0){
+
+alert("กรุณาเลือกสินค้า");
+
+return;
+
+}
+
+document.getElementById("orderModal").style.display="flex";
+
+}
+
+function closeModal(){
+
+document.getElementById("orderModal").style.display="none";
+
+}
+
+function submitOrder(){
+
+let name=document.getElementById("customerName").value;
+
+let phone=document.getElementById("customerPhone").value;
+
+let money=Number(document.getElementById("moneyGiven").value);
+
+if(name==="" || phone==="" || money===0){
+
+alert("กรอกข้อมูลให้ครบ");
+
+return;
+
+}
+
+if(money < total){
+
+alert("เงินไม่พอ");
+
+return;
+
+}
+
+let change = money-total;
+
+let receipt="";
+
+receipt+="ชื่อลูกค้า: "+name+"<br>";
+
+receipt+="เบอร์: "+phone+"<br><br>";
+
+receipt+="รายการสินค้า<br>";
 
 cart.forEach(item=>{
-receiptHTML+=item.name+" x"+item.qty+" = "+(item.price*item.qty)+" บาท<br>"
-})
 
-receiptHTML+="<br>"
-receiptHTML+="ยอดรวม: "+total+" บาท<br>"
-receiptHTML+="รับเงิน: "+money+" บาท<br>"
-receiptHTML+="เงินทอน: "+change+" บาท<br>"
+receipt+=item.name+" - "+item.price+" บาท<br>";
 
-document.getElementById("receipt").innerHTML=receiptHTML
+});
 
-orderNumber++
+receipt+="<br>";
 
-cart=[]
-total=0
+receipt+="รวม: "+total+" บาท<br>";
 
-renderCart()
+receipt+="รับเงิน: "+money+" บาท<br>";
+
+receipt+="เงินทอน: "+change+" บาท<br>";
+
+document.getElementById("receipt").innerHTML=receipt;
+
+
+let order={
+name:name,
+phone:phone,
+total:total,
+date:new Date().toLocaleString()
+};
+
+history.push(order);
+
+localStorage.setItem("coffeeHistory",JSON.stringify(history));
+
+cart=[];
+total=0;
+
+renderCart();
+renderHistory();
+
+closeModal();
+
+alert("สั่งซื้อสำเร็จ");
 
 }
 
-function printReceipt(){
+function renderHistory(){
 
-let content=document.getElementById("receipt").innerHTML
+let div=document.getElementById("orderHistory");
 
-let win=window.open("")
+div.innerHTML="";
 
-win.document.write(content)
+if(history.length===0){
 
-win.print()
+div.innerHTML="ยังไม่มีประวัติ";
+
+return;
 
 }
+
+history.forEach((order,index)=>{
+
+div.innerHTML+=
+"<hr>"+
+"<b>ออเดอร์ "+(index+1)+"</b><br>"+
+"ชื่อ: "+order.name+"<br>"+
+"เวลา: "+order.date+"<br>"+
+"ยอดรวม: "+order.total+" บาท<br>";
+
+});
+
+}
+
+renderHistory();
 
 </script>
 
