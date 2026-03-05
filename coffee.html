@@ -2,9 +2,10 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>Coffee</title>
+<title>Coffee Menu</title>
 
 <style>
+
 body{
 margin:0;
 font-family:Arial;
@@ -44,10 +45,10 @@ border-radius:10px;
 }
 
 button{
-padding:6px 12px;
+padding:8px 14px;
 margin:5px;
 border:none;
-border-radius:5px;
+border-radius:6px;
 cursor:pointer;
 }
 
@@ -82,8 +83,8 @@ a{
 color:white;
 text-decoration:none;
 }
-</style>
 
+</style>
 </head>
 
 <body>
@@ -97,22 +98,25 @@ text-decoration:none;
 
 <div class="products">
 
+<!-- Espresso -->
 <div class="card">
-<img src="https://upload.wikimedia.org/wikipedia/commons/4/45/A_small_cup_of_coffee.JPG">
+<img src="https://images.unsplash.com/photo-1511920170033-f8396924c348">
 <h3>Espresso</h3>
 <p>50 บาท</p>
 <button class="add" onclick="addToCart('Espresso',50)">เพิ่ม</button>
 </div>
 
+<!-- Latte -->
 <div class="card">
-<img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Caff%C3%A8_Latte_at_Pulse_Cafe.jpg">
+<img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735">
 <h3>Latte</h3>
 <p>60 บาท</p>
 <button class="add" onclick="addToCart('Latte',60)">เพิ่ม</button>
 </div>
 
+<!-- Cappuccino -->
 <div class="card">
-<img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Cappuccino_at_Sightglass_Coffee.jpg">
+<img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93">
 <h3>Cappuccino</h3>
 <p>65 บาท</p>
 <button class="add" onclick="addToCart('Cappuccino',65)">เพิ่ม</button>
@@ -120,21 +124,32 @@ text-decoration:none;
 
 </div>
 
+<!-- ตะกร้า -->
+
 <div class="cart">
-<h2>🛒 ตะกร้า</h2>
+
+<h2>🛒 ตะกร้าสินค้า</h2>
+
 <div id="cartItems"></div>
 
 <p>ยอดรวม: <span id="total">0</span> บาท</p>
 
 <button class="checkout" onclick="checkout()">สั่งซื้อ</button>
+
 <button class="cancel" onclick="cancelCart()">ยกเลิกสินค้า</button>
 
 </div>
 
+<!-- ประวัติ -->
+
 <div class="history">
+
 <h2>📜 ประวัติการสั่งซื้อ</h2>
+
 <div id="history"></div>
+
 <button class="remove" onclick="clearHistory()">ลบประวัติ</button>
+
 </div>
 
 </div>
@@ -157,16 +172,22 @@ cart.push({name:name,price:price,qty:1})
 
 total+=price
 renderCart()
+
 }
 
 function renderCart(){
 
 let div=document.getElementById("cartItems")
+
 div.innerHTML=""
 
 cart.forEach((item,index)=>{
 
-div.innerHTML+=item.name+" x"+item.qty+" = "+(item.price*item.qty)+" บาท <button onclick='removeItem("+index+")'>ลบ</button><br>"
+div.innerHTML+=`
+${item.name} x${item.qty} = ${item.price*item.qty} บาท
+<button class="remove" onclick="removeItem(${index})">ลบ</button>
+<br>
+`
 
 })
 
@@ -177,6 +198,7 @@ document.getElementById("total").innerText=total
 function removeItem(index){
 
 total-=cart[index].price*cart[index].qty
+
 cart.splice(index,1)
 
 renderCart()
@@ -184,10 +206,12 @@ renderCart()
 }
 
 /* ปุ่มยกเลิกสินค้า */
+
 function cancelCart(){
 
 cart=[]
 total=0
+
 renderCart()
 
 }
@@ -229,7 +253,12 @@ div.innerHTML=""
 
 history.forEach((o,i)=>{
 
-div.innerHTML+="<hr>ออเดอร์ "+(i+1)+"<br>"+o.date+"<br>ยอดรวม: "+o.total+" บาท<br>"
+div.innerHTML+=`
+<hr>
+ออเดอร์ ${i+1}<br>
+${o.date}<br>
+ยอดรวม: ${o.total} บาท
+`
 
 })
 
