@@ -51,6 +51,11 @@ border-radius:5px;
 cursor:pointer;
 }
 
+.add{
+background:#795548;
+color:white;
+}
+
 .checkout{
 background:green;
 color:white;
@@ -58,6 +63,11 @@ color:white;
 
 .remove{
 background:red;
+color:white;
+}
+
+.cancel{
+background:orange;
 color:white;
 }
 
@@ -88,24 +98,24 @@ text-decoration:none;
 <div class="products">
 
 <div class="card">
-<img src="https://images.unsplash.com/photo-1510707577719-ae7c14805e1d">
+<img src="https://upload.wikimedia.org/wikipedia/commons/4/45/A_small_cup_of_coffee.JPG">
 <h3>Espresso</h3>
 <p>50 บาท</p>
-<button onclick="addToCart('Espresso',50)">เพิ่ม</button>
+<button class="add" onclick="addToCart('Espresso',50)">เพิ่ม</button>
 </div>
 
 <div class="card">
-<img src="https://images.unsplash.com/photo-1523942839745-7848d1c5e4f2">
+<img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Caff%C3%A8_Latte_at_Pulse_Cafe.jpg">
 <h3>Latte</h3>
 <p>60 บาท</p>
-<button onclick="addToCart('Latte',60)">เพิ่ม</button>
+<button class="add" onclick="addToCart('Latte',60)">เพิ่ม</button>
 </div>
 
 <div class="card">
-<img src="https://images.unsplash.com/photo-1572441710534-6805c3b1a4f7">
+<img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Cappuccino_at_Sightglass_Coffee.jpg">
 <h3>Cappuccino</h3>
 <p>65 บาท</p>
-<button onclick="addToCart('Cappuccino',65)">เพิ่ม</button>
+<button class="add" onclick="addToCart('Cappuccino',65)">เพิ่ม</button>
 </div>
 
 </div>
@@ -113,8 +123,12 @@ text-decoration:none;
 <div class="cart">
 <h2>🛒 ตะกร้า</h2>
 <div id="cartItems"></div>
+
 <p>ยอดรวม: <span id="total">0</span> บาท</p>
+
 <button class="checkout" onclick="checkout()">สั่งซื้อ</button>
+<button class="cancel" onclick="cancelCart()">ยกเลิกสินค้า</button>
+
 </div>
 
 <div class="history">
@@ -168,6 +182,17 @@ cart.splice(index,1)
 renderCart()
 
 }
+
+/* ปุ่มยกเลิกสินค้า */
+function cancelCart(){
+
+cart=[]
+total=0
+renderCart()
+
+}
+
+/* สั่งซื้อ */
 
 function checkout(){
 
