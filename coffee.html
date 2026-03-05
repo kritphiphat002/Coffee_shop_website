@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>Coffee Menu</title>
+<title>Jaguar Coffee</title>
 
 <style>
 
@@ -53,7 +53,7 @@ cursor:pointer;
 }
 
 .add{
-background:#795548;
+background:#6d4c41;
 color:white;
 }
 
@@ -72,16 +72,39 @@ background:orange;
 color:white;
 }
 
-.cart,.history{
+.cart,.form,.receipt{
 margin-top:30px;
 background:white;
 padding:20px;
 border-radius:10px;
 }
 
+input{
+padding:8px;
+margin:5px;
+width:200px;
+}
+
+.logo{
+font-size:22px;
+font-weight:bold;
+}
+
 a{
 color:white;
 text-decoration:none;
+}
+
+.receipt-box{
+border:1px dashed #999;
+padding:15px;
+margin-top:10px;
+background:#fafafa;
+}
+
+.print{
+background:#2196f3;
+color:white;
 }
 
 </style>
@@ -90,7 +113,7 @@ text-decoration:none;
 <body>
 
 <header>
-<h1>☕ เมนูกาแฟ</h1>
+<div class="logo">☕ Jaguar Coffee</div>
 <a href="index.html">← กลับหน้าแรก</a>
 </header>
 
@@ -98,7 +121,6 @@ text-decoration:none;
 
 <div class="products">
 
-<!-- Espresso -->
 <div class="card">
 <img src="https://images.unsplash.com/photo-1511920170033-f8396924c348">
 <h3>Espresso</h3>
@@ -106,7 +128,6 @@ text-decoration:none;
 <button class="add" onclick="addToCart('Espresso',50)">เพิ่ม</button>
 </div>
 
-<!-- Latte -->
 <div class="card">
 <img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735">
 <h3>Latte</h3>
@@ -114,7 +135,6 @@ text-decoration:none;
 <button class="add" onclick="addToCart('Latte',60)">เพิ่ม</button>
 </div>
 
-<!-- Cappuccino -->
 <div class="card">
 <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93">
 <h3>Cappuccino</h3>
@@ -124,8 +144,6 @@ text-decoration:none;
 
 </div>
 
-<!-- ตะกร้า -->
-
 <div class="cart">
 
 <h2>🛒 ตะกร้าสินค้า</h2>
@@ -134,21 +152,29 @@ text-decoration:none;
 
 <p>ยอดรวม: <span id="total">0</span> บาท</p>
 
-<button class="checkout" onclick="checkout()">สั่งซื้อ</button>
-
 <button class="cancel" onclick="cancelCart()">ยกเลิกสินค้า</button>
 
 </div>
 
-<!-- ประวัติ -->
+<div class="form">
 
-<div class="history">
+<h2>📝 ข้อมูลผู้สั่งซื้อ</h2>
 
-<h2>📜 ประวัติการสั่งซื้อ</h2>
+<input id="name" placeholder="ชื่อผู้ซื้อ"><br>
+<input id="phone" placeholder="เบอร์โทร"><br>
+<input id="money" placeholder="เงินที่จ่าย"><br>
 
-<div id="history"></div>
+<button class="checkout" onclick="checkout()">สั่งซื้อ</button>
 
-<button class="remove" onclick="clearHistory()">ลบประวัติ</button>
+</div>
+
+<div class="receipt">
+
+<h2>🧾 ใบเสร็จ</h2>
+
+<div id="receipt" class="receipt-box"></div>
+
+<button class="print" onclick="printReceipt()">พิมพ์ใบเสร็จ</button>
 
 </div>
 
@@ -158,7 +184,7 @@ text-decoration:none;
 
 let cart=[]
 let total=0
-let history=JSON.parse(localStorage.getItem("coffeeHistory"))||[]
+let orderNumber=1
 
 function addToCart(name,price){
 
@@ -171,6 +197,7 @@ cart.push({name:name,price:price,qty:1})
 }
 
 total+=price
+
 renderCart()
 
 }
@@ -205,8 +232,6 @@ renderCart()
 
 }
 
-/* ปุ่มยกเลิกสินค้า */
-
 function cancelCart(){
 
 cart=[]
@@ -216,65 +241,73 @@ renderCart()
 
 }
 
-/* สั่งซื้อ */
-
 function checkout(){
 
-if(cart.length===0){
+if(cart.length==0){
 alert("ไม่มีสินค้า")
 return
 }
 
-let order={
-items:cart,
-total:total,
-date:new Date().toLocaleString()
+let name=document.getElementById("name").value
+let phone=document.getElementById("phone").value
+let money=parseInt(document.getElementById("money").value)
+
+if(!name || !phone || !money){
+alert("กรอกข้อมูลให้ครบ")
+return
 }
 
-history.push(order)
+if(money<total){
+alert("เงินไม่พอ")
+return
+}
 
-localStorage.setItem("coffeeHistory",JSON.stringify(history))
+let change=money-total
+
+let now=new Date().toLocaleString()
+
+let receiptHTML=""
+
+receiptHTML+="<b>☕ Jaguar Coffee</b><br>"
+receiptHTML+="Order #: "+orderNumber+"<br>"
+receiptHTML+="วันที่: "+now+"<br><br>"
+
+receiptHTML+="ลูกค้า: "+name+"<br>"
+receiptHTML+="เบอร์: "+phone+"<br><br>"
+
+receiptHTML+="รายการสินค้า<br>"
+
+cart.forEach(item=>{
+receiptHTML+=item.name+" x"+item.qty+" = "+(item.price*item.qty)+" บาท<br>"
+})
+
+receiptHTML+="<br>"
+receiptHTML+="ยอดรวม: "+total+" บาท<br>"
+receiptHTML+="รับเงิน: "+money+" บาท<br>"
+receiptHTML+="เงินทอน: "+change+" บาท<br>"
+
+document.getElementById("receipt").innerHTML=receiptHTML
+
+orderNumber++
 
 cart=[]
 total=0
 
 renderCart()
-renderHistory()
-
-alert("สั่งซื้อสำเร็จ")
 
 }
 
-function renderHistory(){
+function printReceipt(){
 
-let div=document.getElementById("history")
+let content=document.getElementById("receipt").innerHTML
 
-div.innerHTML=""
+let win=window.open("")
 
-history.forEach((o,i)=>{
+win.document.write(content)
 
-div.innerHTML+=`
-<hr>
-ออเดอร์ ${i+1}<br>
-${o.date}<br>
-ยอดรวม: ${o.total} บาท
-`
-
-})
+win.print()
 
 }
-
-function clearHistory(){
-
-localStorage.removeItem("coffeeHistory")
-
-history=[]
-
-renderHistory()
-
-}
-
-renderHistory()
 
 </script>
 
