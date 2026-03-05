@@ -3,32 +3,117 @@
 <head>
 <meta charset="UTF-8">
 <title>Coffee Shop</title>
+
 <style>
-body{margin:0;font-family:Arial;text-align:center;background:#f3f3f3;}
-header{background:#3e2723;color:white;padding:30px;}
-a{
-display:inline-block;
-margin:20px;
+body{
+margin:0;
+font-family:Arial;
+background:#f4f4f4;
+}
+
+header{
+background:#4e342e;
+color:white;
+text-align:center;
+padding:25px;
+}
+
+.hero{
+background:url("https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=1600") center/cover;
+height:300px;
+display:flex;
+align-items:center;
+justify-content:center;
+color:white;
+font-size:40px;
+font-weight:bold;
+}
+
+.menu{
+text-align:center;
+margin:40px;
+}
+
+.menu button{
 padding:15px 30px;
+font-size:18px;
+margin:10px;
+border:none;
+border-radius:8px;
 background:#6d4c41;
 color:white;
-text-decoration:none;
-border-radius:8px;
-font-size:18px;
+cursor:pointer;
 }
-a:hover{background:#4e342e;}
+
+.menu button:hover{
+background:#5d4037;
+}
+
+.about{
+max-width:800px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+.about img{
+width:100%;
+border-radius:10px;
+margin-bottom:15px;
+}
+
+footer{
+text-align:center;
+padding:20px;
+margin-top:40px;
+background:#4e342e;
+color:white;
+}
 </style>
+
 </head>
+
 <body>
 
 <header>
 <h1>☕ Coffee Shop</h1>
+<p>ร้านกาแฟสำหรับทุกคน</p>
 </header>
 
-<h2>เลือกเมนู</h2>
+<div class="hero">
+Welcome to Coffee Shop
+</div>
 
-<a href="coffee.html">เมนูกาแฟ</a>
-<a href="bakery.html">เบเกอรี่</a>
+<div class="menu">
+<button onclick="location.href='menu.html'">ดูเมนูทั้งหมด</button>
+<button onclick="location.href='coffee.html'">เมนูกาแฟ</button>
+<button onclick="location.href='bakery.html'">เบเกอรี่</button>
+</div>
+
+<div class="about">
+
+<img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=1200">
+
+<h2>ประวัติร้าน</h2>
+
+<p>
+Coffee Shop ก่อตั้งขึ้นเพื่อสร้างสถานที่สำหรับการพักผ่อน  
+และดื่มด่ำกับกาแฟคุณภาพดี เราคัดเลือกเมล็ดกาแฟอย่างพิถีพิถัน  
+เพื่อให้ได้รสชาติที่ดีที่สุดสำหรับลูกค้าทุกคน
+</p>
+
+<p>
+นอกจากกาแฟ เรายังมีเบเกอรี่สดใหม่ทุกวัน  
+เหมาะสำหรับการทานคู่กับเครื่องดื่มแก้วโปรดของคุณ
+</p>
+
+</div>
+
+<footer>
+© 2026 Coffee Shop
+</footer>
 
 </body>
 </html>
