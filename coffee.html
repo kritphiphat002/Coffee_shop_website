@@ -3,19 +3,77 @@
 <head>
 <meta charset="UTF-8">
 <title>Coffee</title>
+
 <style>
-body{margin:0;font-family:Arial;background:#f3f3f3;}
-header{background:#4e342e;color:white;padding:20px;text-align:center;}
-.container{padding:30px;}
-.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;}
-.card{background:white;padding:20px;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,0.1);text-align:center;}
-.card img{width:100%;height:200px;object-fit:cover;border-radius:10px;}
-button{padding:6px 12px;margin:5px;border:none;border-radius:5px;cursor:pointer;}
-.checkout{background:green;color:white;}
-.remove{background:red;color:white;}
-.cart,.history{margin-top:30px;background:white;padding:20px;border-radius:10px;}
-a{color:white;text-decoration:none;}
+body{
+margin:0;
+font-family:Arial;
+background:#f3f3f3;
+}
+
+header{
+background:#4e342e;
+color:white;
+padding:20px;
+text-align:center;
+}
+
+.container{
+padding:30px;
+}
+
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+text-align:center;
+}
+
+.card img{
+width:100%;
+height:200px;
+object-fit:cover;
+border-radius:10px;
+}
+
+button{
+padding:6px 12px;
+margin:5px;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+.checkout{
+background:green;
+color:white;
+}
+
+.remove{
+background:red;
+color:white;
+}
+
+.cart,.history{
+margin-top:30px;
+background:white;
+padding:20px;
+border-radius:10px;
+}
+
+a{
+color:white;
+text-decoration:none;
+}
 </style>
+
 </head>
 
 <body>
@@ -30,21 +88,21 @@ a{color:white;text-decoration:none;}
 <div class="products">
 
 <div class="card">
-<img src="https://images.unsplash.com/photo-1511920170033-f8396924c348?w=800">
+<img src="https://images.unsplash.com/photo-1510707577719-ae7c14805e1d">
 <h3>Espresso</h3>
 <p>50 บาท</p>
 <button onclick="addToCart('Espresso',50)">เพิ่ม</button>
 </div>
 
 <div class="card">
-<img src="https://images.unsplash.com/photo-1521305916504-4a1121188589?w=800">
+<img src="https://images.unsplash.com/photo-1523942839745-7848d1c5e4f2">
 <h3>Latte</h3>
 <p>60 บาท</p>
 <button onclick="addToCart('Latte',60)">เพิ่ม</button>
 </div>
 
 <div class="card">
-<img src="https://images.unsplash.com/photo-1509785307050-d4066910ec1e?w=800">
+<img src="https://images.unsplash.com/photo-1572441710534-6805c3b1a4f7">
 <h3>Cappuccino</h3>
 <p>65 บาท</p>
 <button onclick="addToCart('Cappuccino',65)">เพิ่ม</button>
@@ -66,3 +124,105 @@ a{color:white;text-decoration:none;}
 </div>
 
 </div>
+
+<script>
+
+let cart=[]
+let total=0
+let history=JSON.parse(localStorage.getItem("coffeeHistory"))||[]
+
+function addToCart(name,price){
+
+let item=cart.find(i=>i.name===name)
+
+if(item){
+item.qty++
+}else{
+cart.push({name:name,price:price,qty:1})
+}
+
+total+=price
+renderCart()
+}
+
+function renderCart(){
+
+let div=document.getElementById("cartItems")
+div.innerHTML=""
+
+cart.forEach((item,index)=>{
+
+div.innerHTML+=item.name+" x"+item.qty+" = "+(item.price*item.qty)+" บาท <button onclick='removeItem("+index+")'>ลบ</button><br>"
+
+})
+
+document.getElementById("total").innerText=total
+
+}
+
+function removeItem(index){
+
+total-=cart[index].price*cart[index].qty
+cart.splice(index,1)
+
+renderCart()
+
+}
+
+function checkout(){
+
+if(cart.length===0){
+alert("ไม่มีสินค้า")
+return
+}
+
+let order={
+items:cart,
+total:total,
+date:new Date().toLocaleString()
+}
+
+history.push(order)
+
+localStorage.setItem("coffeeHistory",JSON.stringify(history))
+
+cart=[]
+total=0
+
+renderCart()
+renderHistory()
+
+alert("สั่งซื้อสำเร็จ")
+
+}
+
+function renderHistory(){
+
+let div=document.getElementById("history")
+
+div.innerHTML=""
+
+history.forEach((o,i)=>{
+
+div.innerHTML+="<hr>ออเดอร์ "+(i+1)+"<br>"+o.date+"<br>ยอดรวม: "+o.total+" บาท<br>"
+
+})
+
+}
+
+function clearHistory(){
+
+localStorage.removeItem("coffeeHistory")
+
+history=[]
+
+renderHistory()
+
+}
+
+renderHistory()
+
+</script>
+
+</body>
+</html>
